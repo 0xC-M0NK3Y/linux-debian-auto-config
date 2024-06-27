@@ -1,0 +1,47 @@
+;; CONFIG DE BASE ;;
+;; mettre les fichiers ramcho dans /tmp/ ;;
+(setq auto-save-file-name-transforms '((".*" "/tmp/" t)))
+(setq backup-directory-alist '((".*" . "/tmp/")))
+;; pas de scroll ni de menu ;;
+(scroll-bar-mode -1)
+(menu-bar-mode -1)
+;; numero de ligne active ;;
+(global-display-line-numbers-mode 1)
+;; pas de tab, espaces ;;
+(setq-default indent-tabs-mode nil)
+;; taille 4 ;;
+(setq-default tab-width 4)
+;; pour le c style "linux" avec tab de 4 ;;
+(setq c-default-style "linux"
+      c-basic-offset 4)
+(setq-default c-tab-always-indent 'complete)
+
+;; pour les packages
+(require 'package)
+;; PACKAGES ARCHIVES ;;
+(add-to-list 'package-archives
+             '("melpa-stable" . "https://stable.melpa.org/packages/"))
+(package-initialize)
+
+;; CONFIG POUR SCRIPTS ;;
+;; pour multiple cursors ;;
+(require 'multiple-cursors)
+(global-set-key (kbd "C-c r") 'mc/edit-lines)
+(global-set-key (kbd "M->") 'mc/mark-next-like-this)
+(global-set-key (kbd "M-<") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-c M-<") 'mc/mark-all-like-this)
+
+;; pour rainbow delimiters ;;
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+
+;; pour eglot (client lsp) ;;
+(require 'eglot)
+; ! need clangd and clang for lsp c/c++ server and auto-completion
+(add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd"))
+(add-hook 'c-mode-hook 'eglot-ensure)
+(add-hook 'c++-mode-hook 'eglot-ensure)
+; ! need pyrights for lsp python server and auto-completion
+(add-hook 'python-mode-hook 'eglot-ensure)
+
+;; pour company (auto completion) ;;
+(add-hook 'prog-mode-hook #'company-mode)
