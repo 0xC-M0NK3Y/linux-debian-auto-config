@@ -6,6 +6,7 @@ then
     echo ""
     echo "<user> must be the name of the user (not root), which will be configured for"
     echo "he will be added in sudo, install pip and emacs configured"
+    exit 1
 fi
 
 if [[ $EUID -ne 0 ]];
@@ -41,10 +42,10 @@ Section "InputClass"
 EndSection
 EOF
 
-runuser -l $1 -c "wget https://bootstrap.pypa.io/get-pip.py"
-runuser -l $1 -c "python3 get-pip.py --break-system-packages"
-runuser -l $1 -c "rm get-pip.py"
-runuser -l $1 -c "/home/$1/.local/bin/pip3 install pyright --break-system-packages"
+sudo runuser -l $1 -c "wget https://bootstrap.pypa.io/get-pip.py"
+sudo runuser -l $1 -c "python3 get-pip.py --break-system-packages"
+sudo runuser -l $1 -c "rm get-pip.py"
+sudo runuser -l $1 -c "/home/$1/.local/bin/pip3 install pyright --break-system-packages"
 
 cat <<EOF >> /home/$1/.bashrc
 
@@ -56,10 +57,17 @@ alias sudo='sudo '
 PS1="\[\033[m\][\[\033[4;95m\]\A\[\033[m\]]\[\e[1;36m\]\u\[\e[1;36m\]\[\033[m\]@\[\e[1;91m\]\h\[\033[m\]:\[\e[0m\]\[\e[1;35m\][\W]> \[\e[0m\]"
 EOF
 
-emacs --batch --eval "(package-install 'eglot )"
-emacs --batch --eval "(package-install 'multiple-cursors )"
-emacs --batch --eval "(package-install 'company )"
-emacs --batch --eval "(package-install 'rainbow-delimiters )"
+cat <<EOF > /home/$1/.emacs
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa-stable" . "https://stable.melpa.org/packages/"))
+(package-initialize)
+EOF
+
+sudo runuser -l $1 -c "emacs --batch --eval \"(package-install 'eglot )\""
+sudo runuser -l $1 -c "emacs --batch --eval \"(package-install 'multiple-cursors )\""
+sudo runuser -l $1 -c "emacs --batch --eval \"(package-install 'company )\""
+sudo runuser -l $1 -c "emacs --batch --eval \"(package-install 'rainbow-delimiters )\""
 
 cp ./emacs_user_config /home/$1/.emacs
 chown $1:$1 /home/$1/.emacs
@@ -72,6 +80,6 @@ chown $1:$1 /home/$1/.backgrounds
 
 rm -rf /etc/i3/*
 cp -r ./i3/* /etc/i3/
-sed -i 's/DEBIAN_USER/$1/g' /etc/i3/config
+sed -i "s/DEBIAN_USER/$1/g" /etc/i3/config
 
-reboot
+sudo reboot
