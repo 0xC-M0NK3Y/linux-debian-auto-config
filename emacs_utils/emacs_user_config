@@ -23,6 +23,9 @@
              '("melpa-stable" . "https://stable.melpa.org/packages/"))
 (package-initialize)
 
+;; dossier pour les scripts installé manuellement
+(add-to-list 'load-path "/home/user/.emacs.d/manual")
+
 ;; CONFIG POUR SCRIPTS ;;
 ;; pour multiple cursors ;;
 (require 'multiple-cursors)
@@ -45,3 +48,8 @@
 
 ;; pour company (auto completion) ;;
 (add-hook 'prog-mode-hook #'company-mode)
+
+;; activer server lsp et coloration pour go
+(require 'go-mode)
+(require 'eglot)
+(add-hook 'go-mode-hook 'eglot-ensure)

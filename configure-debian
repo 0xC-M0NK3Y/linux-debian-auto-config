@@ -24,7 +24,7 @@ echo "$1	ALL=(ALL:ALL) ALL" >> /etc/sudoers
 apt install -y xorg i3
 apt install -y emacs xfce4-terminal
 apt install -y alsa-utils pulseaudio
-apt install -y make gcc python3 python3-full
+apt install -y make gcc python3 python3-full golang-go nasm
 apt install -y maim xclip feh fonts-font-awesome picom
 apt install -y curl wget ffmpeg yt-dlp
 apt install -y clang clangd
@@ -50,6 +50,7 @@ sudo runuser -l $1 -c "/home/$1/.local/bin/pip3 install pyright --break-system-p
 cat <<EOF >> /home/$1/.bashrc
 
 export PATH="\$PATH:/home/$1/.local/bin"
+export PATH="\$PATH:/home/$1/go/bin"
 
 alias emacs='emacs -nw'
 alias sudo='sudo '
@@ -64,22 +65,26 @@ cat <<EOF > /home/$1/.emacs
 (package-initialize)
 EOF
 
+sudo runuser -l $1 -c "go install golang.org/x/tools/gopls@latest"
 sudo runuser -l $1 -c "emacs --batch --eval \"(package-install 'eglot )\""
 sudo runuser -l $1 -c "emacs --batch --eval \"(package-install 'multiple-cursors )\""
 sudo runuser -l $1 -c "emacs --batch --eval \"(package-install 'company )\""
 sudo runuser -l $1 -c "emacs --batch --eval \"(package-install 'rainbow-delimiters )\""
 
-cp ./emacs_user_config /home/$1/.emacs
+mkdir -p /home/$1/.emacs.d/manual
+chown $1:$1 /home/$1/.emacs.d/manuel
+cp ./emacs_utils/go-mode.el /home/$1/.emacs.d/manuel
+cp ./emacs_utils/emacs_user_config /home/$1/.emacs
 chown $1:$1 /home/$1/.emacs
-cp ./emacs_root_config /root/.emacs
+cp ./emacs_utils/emacs_root_config /root/.emacs
 
 mkdir /home/$1/.backgrounds
 chown $1:$1 /home/$1/.backgrounds
-cp ./debian_wallpaper.png /home/$1/.backgrounds
+cp ./utils/debian_wallpaper.png /home/$1/.backgrounds
 chown $1:$1 /home/$1/.backgrounds
 
 rm -rf /etc/i3/*
-cp -r ./i3/* /etc/i3/
+cp -r ./i3_utils/* /etc/i3/
 sed -i "s/DEBIAN_USER/$1/g" /etc/i3/config
 
 sudo reboot
