@@ -72,8 +72,9 @@ sudo runuser -l $1 -c "emacs --batch --eval \"(package-install 'company )\""
 sudo runuser -l $1 -c "emacs --batch --eval \"(package-install 'rainbow-delimiters )\""
 
 mkdir -p /home/$1/.emacs.d/manual
-chown $1:$1 /home/$1/.emacs.d/manuel
-cp ./emacs_utils/go-mode.el /home/$1/.emacs.d/manuel
+chown $1:$1 /home/$1/.emacs.d/manual
+cp ./emacs_utils/go-mode.el /home/$1/.emacs.d/manual
+chown $1:$1 /home/$1/.emacs.d/manual/*
 cp ./emacs_utils/emacs_user_config /home/$1/.emacs
 chown $1:$1 /home/$1/.emacs
 cp ./emacs_utils/emacs_root_config /root/.emacs
