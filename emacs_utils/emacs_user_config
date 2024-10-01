@@ -16,6 +16,18 @@
       c-basic-offset 4)
 (setq-default c-tab-always-indent 'complete)
 
+;; pour afficher les espaces
+(global-whitespace-mode 1)
+(set-face-attribute 'whitespace-space                  nil :foreground "gray20" :background "nil")
+(set-face-attribute 'whitespace-newline                nil :foreground "gray20" :background "nil")
+(set-face-attribute 'whitespace-indentation            nil :foreground "gray20" :background "nil")
+(set-face-attribute 'whitespace-empty                  nil :foreground "nil" :background "nil")
+(set-face-attribute 'whitespace-trailing               nil :foreground "nil" :background "nil")
+(set-face-attribute 'whitespace-space-after-tab        nil :foreground "nil" :background "nil")
+(set-face-attribute 'whitespace-space-before-tab       nil :foreground "nil" :background "nil")
+(set-face-attribute 'whitespace-missing-newline-at-eof nil :foreground "nil" :background "nil")
+(set-face-attribute 'whitespace-line                   nil :foreground "nil" :background "nil")
+
 ;; pour les packages
 (require 'package)
 ;; PACKAGES ARCHIVES ;;
